@@ -56,13 +56,14 @@ class LoguruMiddleware:
         token = LOGGER_REQUEST_ID_CTX.set(request_id)
         request_ip = request.client.host if request.client else "unknown"
 
-        user = getattr(request, "user", None)
-        request_user = self.user_transform_func(user)
+        # TODO: Auth
+        # user = getattr(request, "user", None)
+        # request_user = self.user_transform_func(user)
 
         request_body_length = request.headers.get("Content-Length", 0)
         logger_with_context = logger.bind(
             request_ip=request_ip,
-            request_user=request_user,
+            # request_user=request_user,
             request_method=request.method,
             request_path=request.url.path,
             request_query=request.url.query,

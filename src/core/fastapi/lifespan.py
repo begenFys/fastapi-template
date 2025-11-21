@@ -7,6 +7,7 @@ from typing import Never
 from fastapi import FastAPI
 from loguru import logger
 
+from src.api import main_router
 from src.core.fastapi.initialization.handler import (
     init_handler_for_custom_http_exception,
     init_handler_for_exception,
@@ -28,7 +29,7 @@ async def lifespan(app: FastAPI) -> AsyncIterator[Never]:
     init_handler_for_sqlalchemy_exception(app_=app, loguru_logger=True)
     logger.debug("Handler initialized.")
 
-    # app.include_router(router=main_router)
-    # logger.debug("Главный API роутер инициализирован")
+    app.include_router(router=main_router)
+    logger.debug("Main API router initialized")
 
     yield  # type: ignore[misc]

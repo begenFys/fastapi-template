@@ -22,8 +22,12 @@ class Settings(BaseSettings):
     """Service settings."""
 
     ENVIRONMENT: EnvironmentType = Field(...)
+    PORT: int = Field(...)
+    WORKERS_COUNT: int = Field(2)
 
-    EXCLUDE_FIELDS: set[str] = {"id", "created_at", "updated_at"}
+    EXCLUDE_FIELDS: set[str] = Field(
+        default_factory=lambda: {"id", "created_at", "updated_at"},
+    )
 
     POSTGRES_HOST: str = Field(...)
     POSTGRES_PORT: int = Field(...)

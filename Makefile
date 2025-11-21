@@ -114,9 +114,11 @@ check-precommit: ## Check
 # -------------
 docker-setup-prod: ## Create all needs production docker stuff
 	docker network ls | grep -q ft-net || docker network create ft-net
+	docker volume ls | grep -q ft-db-data || docker volume create ft-db-data
 
 docker-setup-test: ## Create all needs test docker stuff
 	docker network ls | grep -q ft-test || docker network create ft-test
+	docker volume ls | grep -q ft-db-test-data || docker volume create ft-db-test-data
 
 docker-build-prod: ## Build prod image
 	docker build -t $(DOCKER_USERNAME)/$(PROJECT_NAME):latest -t $(DOCKER_USERNAME)/$(PROJECT_NAME):$(PROJECT_VERSION) .

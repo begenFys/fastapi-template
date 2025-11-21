@@ -21,6 +21,7 @@ dependencies = [
     "orjson>=3.11.4,<4",
     "uvicorn[standard]>=0.34.3,<1",
     "yarl>=1.20.1,<2",
+    "uvicorn-worker>=0.4.0",
 ]
 
 [dependency-groups]
@@ -37,6 +38,8 @@ exclude = ["script*"]
 [tool.ruff]
 line-length = 80
 src = ["src/"]
+extend-exclude = ["migration"]
+force-exclude = true
 
 [tool.ruff.lint]
 select = [

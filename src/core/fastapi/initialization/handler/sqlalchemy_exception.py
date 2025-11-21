@@ -1,16 +1,16 @@
 """SQLAlchemy Exception."""
 
 from asyncpg import UniqueViolationError  # type: ignore[import-untyped]
+from fastapi import FastAPI, Request
+from fastapi.responses import ORJSONResponse
 from loguru import logger
 from sqlalchemy.exc import IntegrityError
 
-from fastapi import FastAPI, Request
-from fastapi.responses import ORJSONResponse
 from src.core.helper.scheme.response.error import ErrorResponse
 from src.core.helper.type.exception import LogSeverity
 
 
-def init_orjson_for_sqlalchemy_exception(
+def init_handler_for_sqlalchemy_exception(
     app_: FastAPI,
     loguru_logger: bool = False,
 ) -> None:
@@ -21,7 +21,7 @@ def init_orjson_for_sqlalchemy_exception(
         exc: IntegrityError,
     ) -> tuple[int, str, str]:
         status_code = 500
-        detail = "Произошла ошибка при выполнении запроса к базе данных."
+        detail = "Error with query to database."
         severity = LogSeverity.error
 
         try:
@@ -36,10 +36,7 @@ def init_orjson_for_sqlalchemy_exception(
             logger.exception(repr(internal_exc))
             status_code = 500
             severity = LogSeverity.error
-            detail = (
-                "Произошла ошибка во время парсинга лога "
-                "ошибки выполнении запроса к базе данных."
-            )
+            detail = "Parsing error with log from database"
 
         return status_code, detail, severity
 

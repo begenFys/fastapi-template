@@ -1,14 +1,14 @@
 """HTTPX Exception."""
 
+from fastapi import FastAPI, Request
+from fastapi.responses import ORJSONResponse
 from httpx import HTTPStatusError
 from loguru import logger
 
-from fastapi import FastAPI, Request
-from fastapi.responses import ORJSONResponse
 from src.core.helper.scheme.response.error import ErrorResponse
 
 
-def init_orjson_for_httpx_exception(
+def init_handler_for_httpx_exception(
     app_: FastAPI,
     loguru_logger: bool = False,
 ) -> None:

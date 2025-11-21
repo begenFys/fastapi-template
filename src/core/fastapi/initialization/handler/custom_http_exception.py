@@ -1,17 +1,17 @@
 """CustomHTTPException."""
 
-from loguru import logger
-
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
+from loguru import logger
+
 from src.core.exception.base import CustomHTTPException
 
 
-def init_orjson_for_custom_http_exception(
+def init_handler_for_custom_http_exception(
     app_: FastAPI,
     loguru_logger: bool = True,
 ) -> None:
-    """Инициализация слушателя для CustomHTTPException."""
+    """Init handler for CustomHTTPException."""
 
     @app_.exception_handler(CustomHTTPException)
     async def custom_http_exception_handler(

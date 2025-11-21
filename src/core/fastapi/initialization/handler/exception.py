@@ -1,13 +1,16 @@
 """FastAPI handler exceptions."""
 
-from loguru import logger
-
 from fastapi import FastAPI, Request
 from fastapi.responses import ORJSONResponse
+from loguru import logger
+
 from src.core.helper.scheme.response.error import ErrorResponse
 
 
-def init_orjson_for_exception(app_: FastAPI, loguru_logger: bool = True) -> None:
+def init_handler_for_exception(
+    app_: FastAPI,
+    loguru_logger: bool = True,
+) -> None:
     """Init handler for Exception."""
 
     @app_.exception_handler(Exception)

@@ -1,36 +1,56 @@
-# my-fastapi-template
+# fastapi-template
 
-**Database:** asyncpg, alembic, sqlalchemy
+**Database:** PostgreSQL
 
 **Creator:** [@begenFys](https://t.me/begenFys)
 
 **Creator's channel:** [@begenFys_life](https://t.me/begenFys_life)
 
-[Source](https://github.com/zhanymkanov/fastapi-best-practices#1-project-structure-consistent--predictable)
-
-## Настройка окружения
-1. Установка виртуального окружения и зависимостей
+## 🔧 Локальное окружение
+- Заполнить env файл:
 ```shell
-pip install pipenv
-
-pipenv shell
-
-pipenv sync
+cp .env.dev.example .env.dev
 ```
 
-2. Заполнить env файл
-
-3. Накатить миграции
+- Установить зависимости:
 ```shell
-alembic upgrade head
+make sync
 ```
 
-## Запуск проекта
-1. Запускаем тестовый шаблон
+- Основные команды разработки:
+Все команды видны через:
 ```shell
-uvicorn src.api.main:app --reload
+make help
 ```
 
-## Запуск через Docker
+- Локальный запуск приложения:
+```shell
+make start
+```
 
-## Запуск через Docker-Compose
+## 🐋 Docker окружение
+- Создать файл окружения:
+```shell
+cp .env.test.example .env.test
+```
+
+- Запустить:
+```shell
+make dc-start-test
+```
+
+- Остановить:
+```shell
+make dc-rm-test
+```
+
+## 🚀 Production
+- Подготовить окружение:
+```shell
+cp .env.prod.example .env.prod
+```
+
+- Запуск prod-стека:
+```shell
+make dc-start-prod
+```

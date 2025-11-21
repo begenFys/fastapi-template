@@ -3,6 +3,8 @@
 import pkgutil
 from pathlib import Path
 
+from .user import User
+
 
 def load_all_models() -> None:
     """Загружаем все модели из этой папки."""
@@ -17,4 +19,5 @@ def load_all_models() -> None:
 
 __all__ = [
     "load_all_models",
+    "User",
 ]

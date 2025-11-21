@@ -29,7 +29,7 @@ services:
 
 
   ft-backend:
-    image: begenFys/ft-backend:latest
+    image: begenFys/fastapi-template:latest
     container_name: ft-backend
     env_file: *env
     restart: *restart

@@ -5,6 +5,7 @@ from enum import StrEnum
 
 class LogSeverity(StrEnum):
     """Log severity."""
+
     info = "INFO"
     warning = "WARNING"
     error = "ERROR"

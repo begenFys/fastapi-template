@@ -1,4 +1,4 @@
-"""Base model with timestamp"""
+"""Base model with timestamp."""
 
 from datetime import datetime
 

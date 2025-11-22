@@ -1,9 +1,11 @@
-"""Pagination response"""
+"""Pagination response."""
+
 from pydantic import BaseModel, ConfigDict, Field
 
 
 class PaginationResponse[T](BaseModel):
     """Pagination response."""
+
     page: int = Field(..., examples=[0])
     page_size: int = Field(..., examples=[0])
     total_pages: int = Field(..., examples=[0])

@@ -1,4 +1,4 @@
-"""For filters response"""
+"""For filters response."""
 
 from typing import Any
 

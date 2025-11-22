@@ -1,0 +1,66 @@
+name: "CD"
+
+on:
+  workflow_dispatch:
+
+env:
+  BASE_NAME_DOCKER: ${{ vars.BASE_NAME_DOCKER }}
+  BASE_DIR: ${{ vars.BASE_DIR || vars.BASE_NAME_DOCKER }}
+  SERVER_SSH: ${{ secrets.SERVER_SSH }}
+  SERVER_USER: ${{ vars.SERVER_USER }}
+  SERVER_HOST: ${{ vars.SERVER_HOST }}
+  WORKERS_COUNT: ${{ vars.WORKERS_COUNT || '4' }}
+  SECRET_KEY: ${{ secrets.SECRET_KEY }}
+  POSTGRES_HOST: ${{ vars.POSTGRES_HOST || format('{0}-db', vars.BASE_NAME_DOCKER) }}
+  POSTGRES_PORT: ${{ vars.POSTGRES_PORT || '5432' }}
+  POSTGRES_DB: ${{ vars.POSTGRES_DB || 'ft' }}
+  POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+  POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+  POSTGRES_HOST_PORT: ${{ vars.POSTGRES_HOST_PORT }}
+#  REDIS_HOST: ${{ vars.REDIS_HOST || format('{0}-redis', vars.BASE_NAME_DOCKER) }}
+#  REDIS_PORT: ${{ vars.REDIS_PORT || '6379' }}
+#  REDIS_USERNAME: ${{ secrets.REDIS_USERNAME }}
+#  REDIS_PASSWORD: ${{ secrets.REDIS_PASSWORD }}
+
+jobs:
+  cd:
+    name: "Continuous Deployment"
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .env file
+        run: |
+          cat << EOF > .env.prod
+          ENVIRONMENT=production
+          WORKERS_COUNT=${{ env.WORKERS_COUNT }}
+          SECRET_KEY=${{ env.SECRET_KEY }}
+          POSTGRES_HOST=${{ env.POSTGRES_HOST }}
+          POSTGRES_PORT=${{ env.POSTGRES_PORT }}
+          POSTGRES_DB=${{ env.POSTGRES_DB }}
+          POSTGRES_USER=${{ env.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ env.POSTGRES_PASSWORD}}
+          POSTGRES_HOST_PORT=${{ env.POSTGRES_HOST_PORT }}
+          REDIS_HOST=${{ env.REDIS_HOST }}
+          REDIS_PORT=${{ env.REDIS_PORT }}
+          REDIS_USERNAME=${{ env.REDIS_USERNAME }}
+          REDIS_PASSWORD=${{ env.REDIS_PASSWORD }}
+          EOF
+
+      - name: Extract name and version from Makefile
+        run: |
+          echo "PROJECT_NAME=$(grep -oP '^PROJECT_NAME := \K.*' Makefile)" >> $GITHUB_ENV
+
+      - name: Setup SSH agent
+        uses: webfactory/ssh-agent@v0.9.0
+        with:
+          ssh-private-key: ${{ env.SERVER_SSH }}
+
+      - name: Check project folder
+        run: ssh -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "mkdir -p /${{ env.BASE_DIR }}/${{ env.PROJECT_NAME }}"
+
+      - name: Copy configs files
+        run: scp ./.env.prod ./Makefile ./docker-compose.yaml ./postgresql.conf ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }}:/${{ env.BASE_DIR }}/${{ env.PROJECT_NAME }}
+
+      - name: Restart docker-compose
+        run: ssh -o StrictHostKeyChecking=no ${{ env.SERVER_USER }}@${{ env.SERVER_HOST }} "cd /${{ env.BASE_DIR }}/${{ env.PROJECT_NAME }} && make dc-start-prod"

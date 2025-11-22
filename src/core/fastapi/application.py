@@ -7,6 +7,7 @@ from fastapi.responses import ORJSONResponse
 
 from src.core.fastapi.lifespan import lifespan
 from src.core.fastapi.middleware import LoguruMiddleware
+from src.core.fastapi.middleware.session import SessionMiddleware
 from src.core.setting import EnvironmentType, project_info, settings
 
 
@@ -46,9 +47,9 @@ def get_app() -> FastAPI:
                 ],
                 allow_headers=["*"],
             ),
-            # Middleware(
-            #     SQLAlchemyMiddleware,
-            # ),
+            Middleware(
+                SessionMiddleware,
+            ),
             Middleware(
                 LoguruMiddleware,
             ),

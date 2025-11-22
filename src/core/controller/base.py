@@ -37,7 +37,7 @@ class BaseController[ModelType](ABC):
         self,
         model: ModelType,
         repository: BaseRepository,
-        exclude_fields: list[str],
+        exclude_fields: set[str],
         response_scheme: BaseModel,
     ):
         self.model_class = model

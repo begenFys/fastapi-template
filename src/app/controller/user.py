@@ -15,7 +15,7 @@ class UserController(SQLAlchemyController[User]):
     def __init__(
         self,
         user_repository: UserRepository,
-        exclude_fields: list[str],
+        exclude_fields: set[str],
         response_scheme: BaseModel,
     ):
         super().__init__(

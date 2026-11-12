@@ -3,6 +3,7 @@
 import pkgutil
 from pathlib import Path
 
+from .refresh_token import RefreshToken
 from .user import User
 
 
@@ -19,5 +20,6 @@ def load_all_models() -> None:
 
 __all__ = [
     "load_all_models",
+    "RefreshToken",
     "User",
 ]

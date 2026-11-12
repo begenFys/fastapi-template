@@ -2,9 +2,15 @@
 
 from fastapi.routing import APIRouter
 
-from src.api.v1 import user
+from src.api.v1 import auth, user
 
 router = APIRouter()
+
+router.include_router(
+    router=auth.router,
+    prefix="/auth",
+    tags=["Auth"],
+)
 
 router.include_router(
     router=user.router,

@@ -1,5 +1,7 @@
 """User response."""
 
+import uuid
+
 from pydantic import ConfigDict, Field
 
 from src.core.helper.scheme.response.timestamp import (
@@ -10,8 +12,8 @@ from src.core.helper.scheme.response.timestamp import (
 class UserResponse(BaseModelWithTimestamp):
     """User response."""
 
-    id: str = Field(..., examples=["1"])
-    username: str = Field(..., examples=["Марлон Марлонов"])
-    email: str = Field(..., examples=["marlon@marlerino.group"])
+    id: uuid.UUID
+    username: str = Field(..., examples=["jane"])
+    email: str = Field(..., examples=["jane@example.com"])
 
     model_config = ConfigDict(from_attributes=True)

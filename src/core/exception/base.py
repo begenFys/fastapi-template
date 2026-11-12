@@ -79,3 +79,11 @@ class DuplicateValueException(CustomHTTPException):
             status_code=HTTPStatus.UNPROCESSABLE_ENTITY,
             detail=message,
         )
+
+
+class ConflictException(CustomHTTPException):
+    def __init__(
+        self,
+        message: str = "Конфликт с текущим состоянием ресурса",
+    ):
+        super().__init__(status_code=HTTPStatus.CONFLICT, detail=message)

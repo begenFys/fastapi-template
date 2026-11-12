@@ -59,7 +59,7 @@ async def test_register_duplicate(
         json=USER | duplicate,
     )
 
-    assert response.status_code == HTTPStatus.UNPROCESSABLE_ENTITY
+    assert response.status_code == HTTPStatus.CONFLICT
 
 
 @pytest.mark.parametrize("login_value", ["jane", "jane@example.com"])

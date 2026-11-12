@@ -157,6 +157,9 @@ dc-down-test: ## Down test docker-compose
 dc-up-prod: ## Start prod docker-compose
 	set -a && . ./.env.prod && set +a && docker compose up -d
 
+dc-up-db-test: ## Start only the test database (for local development)
+	set -a && . ./.env.test && set +a && docker compose -f ./docker-compose.test.yaml up -d ft-db-test
+
 dc-up-test: ## Start test docker-compose
 	set -a && . ./.env.test && set +a && docker compose -f ./docker-compose.test.yaml up -d
 

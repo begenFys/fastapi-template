@@ -10,7 +10,7 @@ from src.app.repository import RefreshTokenRepository, UserRepository
 from src.app.scheme.request.auth import RegisterRequest
 from src.app.scheme.response.token import TokenResponse
 from src.core.exception.base import (
-    DuplicateValueException,
+    ConflictException,
     UnauthorizedException,
 )
 from src.core.security import (
@@ -45,7 +45,7 @@ class AuthController:
         """Create a user.
 
         Raises:
-            DuplicateValueException: Username or email is taken.
+            ConflictException: Username or email is taken.
         """
         email = data.email.lower()
         taken = await self.session.scalar(
@@ -54,7 +54,7 @@ class AuthController:
             ),
         )
         if taken is not None:
-            raise DuplicateValueException("Username or email is already taken")
+            raise ConflictException("Username or email is already taken")
 
         user = User(
             username=data.username,

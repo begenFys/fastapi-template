@@ -29,7 +29,7 @@ services:
 
 
   ft-backend-test:
-    image: begenFys/fastapi-template:test
+    image: begenfys/fastapi-template:test
     container_name: ft-backend-test
     env_file: *env
     restart: *restart
@@ -40,7 +40,7 @@ services:
       ft-db-test:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://0.0.0.0:$${PORT}/api/health || (echo 'Unhealthy, exiting...' && kill 1)" ]
+      test: [ "CMD", "python", "-c", "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ['PORT'] + '/api/health')" ]
       interval: 60s
       timeout: 5s
       retries: 3

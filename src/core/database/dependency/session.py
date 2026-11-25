@@ -32,4 +32,9 @@ class PostgresSession:
             raise
         finally:
             await self.db_session.commit()
-            await self.db_session.close()
+            if isinstance(self.db_session, async_scoped_session):
+                # Drop the request's session from the registry, otherwise
+                # every request leaves an entry behind.
+                await self.db_session.remove()
+            else:
+                await self.db_session.close()

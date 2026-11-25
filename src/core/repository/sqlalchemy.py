@@ -48,7 +48,7 @@ class SQLAlchemyRepository[
     """Базовый класс для репозиториев данных sqlalchemy."""
 
     model_class: type[ModelType]
-    session: type[SessionType]
+    session: SessionType
 
     async def _create(self, model: ModelType) -> None:
         self.session.add(model)

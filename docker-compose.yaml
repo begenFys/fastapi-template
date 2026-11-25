@@ -11,7 +11,7 @@ services:
     image: postgres:16
     container_name: ft-db
     env_file: &env
-      - .env.test
+      - .env.prod
     volumes:
       - ft-db-data:/var/lib/postgresql/data
       - ./postgresql.conf:/etc/postgresql/postgresql.conf
@@ -29,7 +29,7 @@ services:
 
 
   ft-backend:
-    image: begenFys/fastapi-template:latest
+    image: begenfys/fastapi-template:latest
     container_name: ft-backend
     env_file: *env
     restart: *restart
@@ -38,7 +38,7 @@ services:
       ft-db:
         condition: service_healthy
     healthcheck:
-      test: [ "CMD-SHELL", "curl -f http://0.0.0.0:$${PORT}/api/health || (echo 'Unhealthy, exiting...' && kill 1)" ]
+      test: [ "CMD", "python", "-c", "import os, urllib.request; urllib.request.urlopen('http://127.0.0.1:' + os.environ['PORT'] + '/api/health')" ]
       interval: 60s
       timeout: 5s
       retries: 3

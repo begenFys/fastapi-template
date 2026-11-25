@@ -12,13 +12,16 @@ from src.core.setting import settings
 
 if TYPE_CHECKING:
     from src.app.controller import (
+        AuthController,
         UserController,
     )
 
 from src.app.model import (
+    RefreshToken,
     User,
 )
 from src.app.repository import (
+    RefreshTokenRepository,
     UserRepository,
 )
 from src.core.database.session import db_session
@@ -29,6 +32,10 @@ class Factory:
 
     # Repositories
     user_repository = partial(UserRepository, model=User)
+    refresh_token_repository = partial(
+        RefreshTokenRepository,
+        model=RefreshToken,
+    )
 
     def get_user_controller(
         self,
@@ -43,4 +50,20 @@ class Factory:
             user_repository=self.user_repository(db_session=db_session),
             exclude_fields=settings.EXCLUDE_FIELDS,
             response_scheme=UserResponse,  # type: ignore[arg-type]
+        )
+
+    def get_auth_controller(
+        self,
+        db_session: AsyncSession | async_scoped_session[AsyncSession] = Depends(
+            PostgresSession(db_session=db_session),
+        ),
+    ) -> "AuthController":
+        """Get auth controller."""
+        from src.app.controller import AuthController
+
+        return AuthController(
+            user_repository=self.user_repository(db_session=db_session),
+            refresh_token_repository=self.refresh_token_repository(
+                db_session=db_session,
+            ),
         )

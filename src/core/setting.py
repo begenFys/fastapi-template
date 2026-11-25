@@ -25,6 +25,11 @@ class Settings(BaseSettings):
     PORT: int = Field(...)
     WORKERS_COUNT: int = Field(2)
 
+    SECRET_KEY: str = Field(..., min_length=32)
+    JWT_ALGORITHM: str = Field("HS256")
+    ACCESS_TOKEN_TTL_MINUTES: int = Field(15, ge=1)
+    REFRESH_TOKEN_TTL_DAYS: int = Field(30, ge=1)
+
     EXCLUDE_FIELDS: set[str] = Field(
         default_factory=lambda: {"id", "created_at", "updated_at"},
     )

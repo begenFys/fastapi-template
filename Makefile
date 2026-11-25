@@ -3,7 +3,7 @@
 
 PROJECT_NAME := fastapi-template
 PROJECT_VERSION := 0.1.0
-DOCKER_USERNAME := begenFys
+DOCKER_USERNAME := begenfys
 GIT_REVISION = `git rev-parse HEAD`
 PROD_SERVER_SSH := dev-vds
 STU_SERVER_SSH := dev-vps
@@ -72,23 +72,27 @@ start: ## Starts the server
 
 .PHONY: migrate
 migrate:  ## Run the migrations
-	set -a && . ./.env.dev && set +a && alembic upgrade head
+	set -a && . ./.env.dev && set +a && uv run alembic upgrade head
 
 .PHONY: rollback
 rollback: ## Rollback migrations one level
-	set -a && . ./.env.dev && set +a && alembic downgrade -1
+	set -a && . ./.env.dev && set +a && uv run alembic downgrade -1
 
 .PHONY: reset-database
 reset-database: ## Rollback all migrations
-	set -a && . ./.env.dev && set +a && alembic downgrade base
+	set -a && . ./.env.dev && set +a && uv run alembic downgrade base
 
 .PHONY: generate-migration
 generate-migration: ## Generate a new migration
 	@read -p "Enter migration message: " message; \
-	set -a && . ./.env.dev && set +a && alembic revision --autogenerate -m "$$message"
+	set -a && . ./.env.dev && set +a && uv run alembic revision --autogenerate -m "$$message"
 
 # Check, lint and format targets
 # ------------------------------
+.PHONY: test
+test: ## Run tests (starts PostgreSQL in Docker via testcontainers)
+	uv run pytest
+
 .PHONY: lint
 lint: ## Run linter
 	uv run ruff check
@@ -98,15 +102,15 @@ format: ## Run code formatter
 	uv run ruff format
 	uv run ruff check --fix
 
-.PHONE: check-types
+.PHONY: check-types
 check-types: ## Check types
-	uv run mypy src --install-types
+	uv run mypy src
 
-.PHONE: setup-precommit
+.PHONY: setup-precommit
 setup-precommit: ## Install all hooks
 	uv run pre-commit install
 
-.PHONE: check-precommit
+.PHONY: check-precommit
 check-precommit: ## Check
 	uv run pre-commit run --all-files
 
@@ -152,6 +156,9 @@ dc-down-test: ## Down test docker-compose
 
 dc-up-prod: ## Start prod docker-compose
 	set -a && . ./.env.prod && set +a && docker compose up -d
+
+dc-up-db-test: ## Start only the test database (for local development)
+	set -a && . ./.env.test && set +a && docker compose -f ./docker-compose.test.yaml up -d ft-db-test
 
 dc-up-test: ## Start test docker-compose
 	set -a && . ./.env.test && set +a && docker compose -f ./docker-compose.test.yaml up -d
